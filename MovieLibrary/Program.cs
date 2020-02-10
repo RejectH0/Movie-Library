@@ -12,6 +12,9 @@ namespace MovieLibrary
     // Code Update: 09FEB2020 / 1803
     // Code Commit Update: 09FEB2020 / 1830 - Header, Menu, ExitGracefully all working
     // Version 1.0a Released: 10FEB2020 / 0115
+    // Version 1.1a Released: 10FEB2020 / 0130 
+    // Version 1.2a Released: 10FEB2020 / 0140
+
     class Movie : IDisposable
     {
         private static int idNext = 1;
@@ -346,7 +349,7 @@ namespace MovieLibrary
             };
 
             Console.SetCursorPosition(0, 8);
-            ConsoleSpaces(70, 5);
+            ConsoleSpaces(90, 20);
 
             Console.SetCursorPosition(75, 9);
             Console.Write("Movie   : {0}", enterMovie[0]);
@@ -503,7 +506,8 @@ namespace MovieLibrary
         {
             DisplayHeader();
             var moviesCount = movies.Count();
-            Console.WriteLine("There are currently {0:N0} Movies in the Library.", moviesCount);
+
+            Console.WriteLine("There {0} currently {1:N0} Movie{2} in the Library.", (moviesCount == 0 || moviesCount > 1) ? "are" : "is", moviesCount, (moviesCount == 0 || moviesCount > 1) ? "s" : "");
 
             PressEnterToContinue();
 
@@ -535,7 +539,7 @@ namespace MovieLibrary
         {
             DisplayHeader();
             var genresCount = Genre.AllGenres.Count();
-            Console.WriteLine("There are currently {0:N0} Genres in the Library.", genresCount);
+            Console.WriteLine("There {0} currently {1:N0} Genre{2} in the Library.", (genresCount == 0 || genresCount > 1) ? "are" : "is", genresCount, (genresCount == 0 || genresCount > 1) ? "s" : "");
 
             PressEnterToContinue();
 
@@ -611,7 +615,7 @@ namespace MovieLibrary
                 }
                 else if (str.Length < fixedLength || str.Length > fixedLength)
                 {
-                    Console.WriteLine("Your entry must be exactly {0} digits.");
+                    Console.WriteLine("Your entry must be exactly {0} digits.", fixedLength);
                 }
                 else if (!success)
                 {
@@ -662,9 +666,9 @@ namespace MovieLibrary
                 {
                     if (headers[0].Equals("movieId"))
                     {
-                        if (DisplayDebugInformation) 
-                        { 
-                            Console.Write("{0,-60}{1,-10}{2,-30}\n", headers); 
+                        if (DisplayDebugInformation)
+                        {
+                            Console.Write("{0,-60}{1,-10}{2,-30}\n", headers);
                         }
 
                         while (csv.ReadNextRecord())
@@ -699,7 +703,7 @@ namespace MovieLibrary
 
                 if (fieldCount == 4)
                 {
-                    if (headers[0].Equals("Movie ID"))
+                    if (headers[0].Equals("MovieID"))
                     {
                         if (DisplayDebugInformation)
                         {
@@ -708,13 +712,21 @@ namespace MovieLibrary
 
                         while (csv.ReadNextRecord())
                         {
-                            string[] movieImport = new string[]
+                            string[] movieImport = new string[4];
+                            try
                             {
-                                csv[csv.GetFieldIndex("Movie ID")],
-                                csv[csv.GetFieldIndex("Movie Title")],
-                                csv[csv.GetFieldIndex("Movie Year")],
-                                csv[csv.GetFieldIndex("Movie Genres")]
-                            };
+                                movieImport = new string[] {
+                                csv[csv.GetFieldIndex("MovieID")],
+                                csv[csv.GetFieldIndex("MovieTitle")],
+                                csv[csv.GetFieldIndex("MovieYear")],
+                                csv[csv.GetFieldIndex("MovieGenres")]
+                                };
+                            }
+                            catch (MalformedCsvException e)
+                            {
+                                Console.WriteLine(" [=+-> Found a problem with import record #{0} <-+=]", recordCount+1);
+                            }
+
                             if (DisplayDebugInformation)
                             {
                                 Console.Write("{0,-10}{1,-60}{2,-6}{3,-20}\n", movieImport);
@@ -725,11 +737,11 @@ namespace MovieLibrary
                         }
                     }
                 }
-                
-                Console.WriteLine("A total of {0:N0} records were added.",recordCount);
-                Console.WriteLine("A total of {0:N0} Movies now exist in the Library.",movies.Count());
+
+                Console.WriteLine("A total of {0:N0} records were added.", recordCount);
+                Console.WriteLine("A total of {0:N0} Movies now exist in the Library.", movies.Count());
             }
-            
+
             PressEnterToContinue();
         }
         private static void Dump(object o)
@@ -749,7 +761,7 @@ namespace MovieLibrary
             {
                 using (StreamWriter sw = new StreamWriter(fileData, false))
                 {
-                    sw.Write("Movie ID,Movie Title,Movie Year,Movie Genres\n");
+                    sw.Write("MovieID,MovieTitle,MovieYear,MovieGenres\n");
 
                     foreach (var movie in movies)
                     {
