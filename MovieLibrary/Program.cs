@@ -13,7 +13,7 @@ namespace MovieLibrary
     // Code Commit Update: 09FEB2020 / 1830 - Header, Menu, ExitGracefully all working
     // Version 1.0a Released: 10FEB2020 / 0115
     // Version 1.1a Released: 10FEB2020 / 0130 
-    // Version 1.2a Released: 10FEB2020 / 0140
+    //// Version 1.2a Released: 10FEB2020 / 0140
 
     class Movie : IDisposable
     {
