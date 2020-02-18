@@ -14,6 +14,7 @@ namespace MovieLibrary
     // Version 1.0a Released: 10FEB2020 / 0115
     // Version 1.1a Released: 10FEB2020 / 0130 
     //// Version 1.2a Released: 10FEB2020 / 0140
+    // Version 1.3 Released: 17FEB2020 / 1835
 
     class Movie : IDisposable
     {
